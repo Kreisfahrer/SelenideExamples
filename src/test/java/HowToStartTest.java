@@ -1,26 +1,20 @@
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.WebDriverRunner;
-import com.codeborne.selenide.testng.BrowserPerClass;
-import com.codeborne.selenide.testng.BrowserPerTest;
-import com.codeborne.selenide.testng.ScreenShooter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import pages.HomePage;
+import pages.LoginPage;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.CollectionCondition.texts;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Selenide.*;
 
 public class HowToStartTest {
 
@@ -57,5 +51,23 @@ public class HowToStartTest {
         driver.findElement(By.id("btn")).click();
         new WebDriverWait(driver, 10000).until(ExpectedConditions.invisibilityOfElementLocated(By.id("checkbox")));
         driver.quit();
+    }
+
+    @Test
+    public void loginTest() {
+        open("", HomePage.class)
+                .goTo("Form Authentication", LoginPage.class)
+                .login("tomsmith", "SuperSecretPassword!")
+                .shouldLogin();
+    }
+
+    @Test
+    public void negativeLoginTest() {
+        open("", HomePage.class)
+                .goTo("Form Authentication", LoginPage.class)
+                .setUserName("user")
+                .setPassword("pass")
+                .submit()
+                .shouldNotLogin();
     }
 }
